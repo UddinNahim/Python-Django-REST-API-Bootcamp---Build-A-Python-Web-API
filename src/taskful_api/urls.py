@@ -18,12 +18,15 @@ Including another URLconf
 
 from django.conf import settings
 from django.contrib import admin
-from django.urls import path,include
+from django.urls import path,include, re_path
 
 from users import router as user_api_router
 
 
-auth_api_urls = []
+
+auth_api_urls = [
+    path('',include('rest_framework_social_oauth2.urls')),
+]
 
 if settings.DEBUG:
     auth_api_urls.append(path(r'verify/',include('rest_framework.urls')))
@@ -32,7 +35,9 @@ if settings.DEBUG:
 
 api_url_patterns = [
     path(r'auth/',include(auth_api_urls)),
-    path(r'accounts/', include(user_api_router.router.urls))
+    path(r'accounts/', include(user_api_router.router.urls)),
+
+    re_path(r'^auth/', include('drf_social_oauth2.urls', namespace='drf')),
 ]
 
 urlpatterns = [
