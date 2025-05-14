@@ -25,6 +25,8 @@ from django.conf.urls.static import static
 from users import router as user_api_router
 from house import router as house_api_router
 
+from task import router as task_api_router
+
 
 
 auth_api_urls = [
@@ -42,6 +44,7 @@ api_url_patterns = [
     path(r'house/',include(house_api_router.router.urls)),
 
     re_path(r'^auth/', include('drf_social_oauth2.urls', namespace='drf')),
+    path(r'task/',include(task_api_router.router.urls))
 ]
 
 urlpatterns = [
