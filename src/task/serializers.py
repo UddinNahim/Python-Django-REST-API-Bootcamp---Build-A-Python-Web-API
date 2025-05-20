@@ -10,6 +10,20 @@ class TaskListSerializer(serializers.ModelSerializer):
     created_by = serializers.HyperlinkedRelatedField(read_only=True,many = False,view_name = 'profile-detail')
     tasks = serializers.HyperlinkedRelatedField(read_only = True, many = True, view_name='task-detail')
 
+    def validate_task_list(self, value):
+        user_profile = self.context['request'].user.profile
+        if value  not in user_profile.houes.lists.all():
+            raise serializers.ValidationError("Tasklist provided doesnot belong to house for which user is memeber.")
+        return value
+    
+    def create(self,validated_data):
+        user_profile = self.context['request'].user.profile
+        task = Task.objects.create(**validated_data)
+        task.created_by = user_profile
+        task.save()
+        return task
+
+
 
 
     class Meta:
